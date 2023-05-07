@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load Test Results</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .green {
+            background-color: #90ee90;
+        }
+        .red {
+            background-color: #ffcccb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Load Test Results</h1>
+    <h2>Good Requests: 0.0%</h2>
+    <h2>Bad Requests: 100.0%</h2>
+    <h2>Concurrent Users: 10000</h2>
+    <h2>Number of Requests: 100000</h2>
+    <h2>Seconds: 60</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>URL</th>
+                <th>StartTime</th>
+                <th>Milliseconds</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+                <tr>
+                    <td>http://localhost:3001/categories</td>
+                    <td>2023-05-07 16:56:23</td>
+                    <td class="red">3522</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/websites</td>
+                    <td>2023-05-07 16:57:30</td>
+                    <td class="red">3384</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search</td>
+                    <td>2023-05-07 16:58:58</td>
+                    <td class="red">8250</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=geladeira</td>
+                    <td>2023-05-07 17:00:23</td>
+                    <td class="red">8055</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=tv</td>
+                    <td>2023-05-07 17:01:54</td>
+                    <td class="red">8560</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=celular</td>
+                    <td>2023-05-07 17:03:12</td>
+                    <td class="red">7300</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=geladeira&website=Buscape</td>
+                    <td>2023-05-07 17:04:18</td>
+                    <td class="red">6250</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=tv&website=Buscape</td>
+                    <td>2023-05-07 17:05:18</td>
+                    <td class="red">5548</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=celular&website=Buscape</td>
+                    <td>2023-05-07 17:06:21</td>
+                    <td class="red">5955</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=geladeira&website=Mercado%20Livre</td>
+                    <td>2023-05-07 17:07:55</td>
+                    <td class="red">8861</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=tv&website=Mercado%20Livre</td>
+                    <td>2023-05-07 17:09:27</td>
+                    <td class="red">8693</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=celular&website=Mercado%20Livre</td>
+                    <td>2023-05-07 17:11:02</td>
+                    <td class="red">8874</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=geladeira&website=Buscape&search=brastemp</td>
+                    <td>2023-05-07 17:12:09</td>
+                    <td class="red">6317</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=tv&website=Buscape&search=lg</td>
+                    <td>2023-05-07 17:13:11</td>
+                    <td class="red">5796</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=celular&website=Buscape&search=iphone</td>
+                    <td>2023-05-07 17:14:11</td>
+                    <td class="red">5632</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=geladeira&website=Mercado%20Livre&search=brastemp</td>
+                    <td>2023-05-07 17:15:36</td>
+                    <td class="red">8055</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=tv&website=Mercado%20Livre&search=lg</td>
+                    <td>2023-05-07 17:17:00</td>
+                    <td class="red">7856</td>
+                </tr>
+            
+                <tr>
+                    <td>http://localhost:3001/search?category=celular&website=Mercado%20Livre&search=iphone</td>
+                    <td>2023-05-07 17:18:23</td>
+                    <td class="red">7799</td>
+                </tr>
+            
+        </tbody>
+    </table>
+</body>
+</html>

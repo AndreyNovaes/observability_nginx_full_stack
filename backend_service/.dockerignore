@@ -1,0 +1,10 @@
+.git
+.gitignore
+node_modules
+report_load_test
+venv
+.env.example
+.env
+jest.config.js
+requirements.txt
+README.md
