@@ -17,7 +17,6 @@ const App = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(24);
 
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -55,7 +54,7 @@ const App = () => {
     };
   
     fetchSearchData();
-  }, [selectedCategory, selectedWebsite, searchValue, page]);
+  }, [selectedCategory, selectedWebsite, page]);
 
   const handlePageChange = async (newPage: number) => {
     setPage(Number(newPage));

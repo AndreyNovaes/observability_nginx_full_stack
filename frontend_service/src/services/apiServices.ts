@@ -54,12 +54,25 @@ export const getSearch = async (searchParams: SearchParams) => {
       params.limit = limit;
     }
 
+    const message = `User searched for category: ${category}, website: ${website}, searchValue: ${searchValue}, page: ${page}, limit: ${limit}`;
+    await sendPublishMessageRequest(message);
+    console.warn("Message published:", message);
+    
     const response = await apiClient.get("/search", { params });
-    const { products } = response.data;
 
+    const { products } = response.data;
+    console.warn("Response:", products);
     return products;
   } catch (error) {
     console.error("Error fetching search data:", error);
     throw error;
+  }
+};
+
+export const sendPublishMessageRequest = async (message: string) => {
+  try {
+    await apiClient.post("/publish-message", { message });
+  } catch (error) {
+    console.error("Error sending publish message request:", error);
   }
 };

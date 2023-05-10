@@ -15,6 +15,11 @@ const SearchBox: React.FC<SearchBoxProps> = ({ value, onChange, onSearch }) => {
       <Input
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            onSearch();
+          }
+        }}
         placeholder="Digite sua busca"
         width="100%"
       />
@@ -22,7 +27,16 @@ const SearchBox: React.FC<SearchBoxProps> = ({ value, onChange, onSearch }) => {
     </VStack>
   ) : (
     <HStack spacing={4}>
-      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Digite sua busca" />
+      <Input 
+        value={value} 
+        onChange={(e) => onChange(e.target.value)} 
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            onSearch();
+          }
+        }}
+        placeholder="Digite sua busca" 
+      />
       <Button onClick={onSearch}>Search</Button>
     </HStack>
   );

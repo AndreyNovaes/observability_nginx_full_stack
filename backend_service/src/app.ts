@@ -4,44 +4,39 @@ import dotenv from "dotenv";
 import { categoriesController } from "./dependencyWiring/categories.wiring";
 import { websitesController } from "./dependencyWiring/websites.wiring";
 import { searchController } from "./dependencyWiring/search.wiring";
+import { publishMessageController } from "./dependencyWiring/rabbitMQPublisher.wiring";
 // route creators
 import { createCategoriesRouter } from "./routes/categories.route";
 import { createWebsitesRouter } from "./routes/websites.route";
 import { createSearchRouter } from "./routes/search.route";
+import { createMetricsRouter } from "./routes/metrics.route";
+import { createPublishMessageRouter } from "./routes/publishMessage.route";
 // cors
 import cors from "cors";
 // error middleware
 import { errorMiddleware } from "./Error/error.middleware";
-// observability (prometheus)
-import client from 'prom-client';
+// message handler
+import { rabbitMQConsumer } from './dependencyWiring/rabbitMQConsumer.wiring';
+import { createMessagesRouter } from './routes/messages.route';
+import { messageStorage } from './dependencyWiring/messageStorage.wiring';
 
-const register = new client.Registry();
-client.collectDefaultMetrics({ register });
-const customMetric = new client.Counter({
-  name: 'my_custom_metric',
-  help: 'This is a custom metric',
-  registers: [register],
-});
-customMetric.inc();
+rabbitMQConsumer.start();
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
+rabbitMQConsumer.start();
 
-app.get('/metrics', async (req, res) => {
-  try {
-    res.set('Content-Type', register.contentType);
-    res.end(await register.metrics());
-  } catch (error) {
-    res.status(500).send({ error: 'Failed to fetch metrics' });
-  }
-});
+app.use(cors());
+app.use(express.json());
 
 app.use("/categories", createCategoriesRouter(categoriesController));
 app.use("/websites", createWebsitesRouter(websitesController));
 app.use("/search", createSearchRouter(searchController));
+app.use("/metrics", createMetricsRouter());
+app.use("/publish-message", createPublishMessageRouter(publishMessageController));
+app.use("/messages", createMessagesRouter(messageStorage));
 
 app.use(errorMiddleware);
 
