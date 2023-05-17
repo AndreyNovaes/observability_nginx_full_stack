@@ -3,7 +3,7 @@
 node_modules
 report_load_test
 venv
-.env.example
+.env. example
 .env
 jest.config.js
 requirements.txt

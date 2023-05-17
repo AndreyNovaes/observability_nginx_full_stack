@@ -12,12 +12,23 @@ export const getWebsites = async () => {
   return websites;
 };
 
-interface SearchParams {
+export const sendPublishMessageRequest = async (message: string) => {
+  try {
+    await apiClient.post("/publish-message", { message });
+  } catch (error) {
+    console.error("Error sending publish message request:", error);
+  }
+};
+
+interface Product {
+  id: string;
+  description: string;
   category: string;
+  price: number;
+  image: string;
+  link: string;
   website: string;
-  searchValue: string;
-  page?: number;
-  limit?: number;
+  score: number;
 }
 
 interface SearchParams {
@@ -25,11 +36,18 @@ interface SearchParams {
   website: string;
   searchValue: string;
   page?: number;
-  limit?: number;
+  limit?: number; 
 }
 
+// modular and reusable code
 export const getSearch = async (searchParams: SearchParams) => {
   try {
+    const message = `Search performed with parameters: ${JSON.stringify(searchParams)}`;
+    sendPublishMessageRequest(message).catch(error => {
+      console.error("Error sending publish message request:", error);
+    });
+
+    const keys = Object.keys(localStorage);
     const { category, website, searchValue, page, limit } = searchParams;
 
     const params: Record<string, string | number> = {};
@@ -54,25 +72,25 @@ export const getSearch = async (searchParams: SearchParams) => {
       params.limit = limit;
     }
 
-    const message = `User searched for category: ${category}, website: ${website}, searchValue: ${searchValue}, page: ${page}, limit: ${limit}`;
-    await sendPublishMessageRequest(message);
-    console.warn("Message published:", message);
-    
     const response = await apiClient.get("/search", { params });
 
-    const { products } = response.data;
-    console.warn("Response:", products);
-    return products;
+    let products = response.data.products;    
+
+    products.data.forEach((product: Product) => {
+      product.score = 0;
+      const words = product.description.split(' ');
+
+      [...words, product.category].forEach(word => {
+        if (keys.includes(word)) {
+          product.score += parseInt(localStorage.getItem(word) || '0');
+        }
+      });
+    });
+
+    let sortedProducts = products.data.sort((a: Product, b: Product) => b.score - a.score);
+    return { total: products.total, data: sortedProducts };
   } catch (error) {
     console.error("Error fetching search data:", error);
     throw error;
-  }
-};
-
-export const sendPublishMessageRequest = async (message: string) => {
-  try {
-    await apiClient.post("/publish-message", { message });
-  } catch (error) {
-    console.error("Error sending publish message request:", error);
   }
 };

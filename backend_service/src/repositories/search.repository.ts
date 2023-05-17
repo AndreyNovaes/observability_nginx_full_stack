@@ -1,6 +1,10 @@
 import { poolConnectionClient } from "../database/pgPoolConnection.database";
 import { IPaginatedProducts, ISearchProductsRepository, ISearchParams } from "../interfaces/ISearchProducts";
 
+// parametrização da queries para evitar SQL Injection
+// paginação eficiente com OFFSET e LIMIT, ou seja, fetch only the data you need
+// uses a modular and reusable query
+
 export class SearchProductsRepository implements ISearchProductsRepository {
   constructor(private pool: typeof poolConnectionClient) { }
 

@@ -15,7 +15,7 @@ export class SearchProductsService {
     }
 
     const products = await this.searchProductsRepository.getSearchProducts(searchParams);
-    const secondsInADay = 86400;
+    const secondsInADay = 600;
     await this.IRedisConnection.setex(cacheKey, secondsInADay, JSON.stringify(products));
 
     return products;

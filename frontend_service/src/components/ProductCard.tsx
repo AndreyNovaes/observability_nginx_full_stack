@@ -11,6 +11,21 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ id, category, description, price, image, link, website }: ProductCardProps) => {
+
+  const processDescription = (description: string): void => {
+    const words = description.split(' ');
+    words.forEach(word => {
+      let currentScore = localStorage.getItem(word);
+      localStorage.setItem(word, currentScore ? (parseInt(currentScore || "0") + 1).toString() : "1");
+    });
+  }
+  
+  const onProductClick = (category: string, description: string): void => {
+    let currentScore = localStorage.getItem(category);
+    localStorage.setItem(category, currentScore ? (parseInt(currentScore || "0") + 1).toString() : "1");
+    processDescription(description);
+  }
+  
   return (
     <Box
       key={id}
@@ -50,6 +65,7 @@ const ProductCard = ({ id, category, description, price, image, link, website }:
         <Button
           as={Link}
           href={link}
+          onClick={() => onProductClick(category, description)}
           isExternal
           mt={2}
           colorScheme="blue"

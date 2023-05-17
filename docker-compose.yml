@@ -3,6 +3,7 @@ version: '3.9'
 services:
   frontend:
     build: ./frontend_service
+    restart: unless-stopped
     container_name: frontend
     env_file: ./frontend_service/.env
     ports:
@@ -11,14 +12,19 @@ services:
       - backend
     networks:
       - monitoring
+
   backend:
     build: ./backend_service
+    restart: unless-stopped
     container_name: backend
     env_file: ./backend_service/.env
     ports:
       - "3001:3001"
     networks:
       - monitoring
+    depends_on:
+      - rabbitmq
+
   node_exporter:
     image: prom/node-exporter:latest
     container_name: node_exporter
@@ -29,6 +35,7 @@ services:
   
   prometheus:
     image: prom/prometheus:latest
+    restart: unless-stopped
     container_name: prometheus
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
@@ -41,8 +48,10 @@ services:
       - "9090:9090"
     networks:
       - monitoring
+
   grafana:
     image: grafana/grafana:latest
+    restart: unless-stopped
     container_name: grafana
     ports:
       - "3000:3000"
@@ -52,48 +61,49 @@ services:
       - grafana-data:/var/lib/grafana
     networks:
       - monitoring
+
   rabbitmq:
     image: rabbitmq:3-management
+    restart: unless-stopped
     container_name: rabbitmq
+    hostname: rabbitmq
+    networks:
+      - monitoring
     ports:
-      - "5672:5672"
       - "15672:15672"
-    networks:
-      - monitoring
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-    depends_on:
-      - backend
-      - frontend
-  rabbitmq_exporter:
-    image: kbudde/rabbitmq-exporter:latest
-    container_name: rabbitmq_exporter
-    ports:
-      - "9419:9419"
-    networks:
-      - monitoring
-    environment:
-      RABBITMQ_EXPORTER_USERNAME: guest
-      RABBITMQ_EXPORTER_PASSWORD: guest
-      RABBITMQ_URL: http://rabbitmq:15672
-    depends_on:
-      - rabbitmq
+      - "5672:5672"
+  # rabbitmq_exporter:
+  #   depends_on:
+  #     - rabbitmq
+  #   image: kbudde/rabbitmq-exporter
+  #   container_name: rabbitmq-exporter
+  #   network_mode: service:rabbitmq
+  #   environment:
+  #     RABBIT_URL: http://rabbitmq:15672
+  #     RABBIT_USER: guest
+  #     RABBIT_PASSWORD: guest
+  #   networks:
+  #     - monitoring
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
+    restart: unless-stopped
     container_name: cadvisor
+    privileged: true
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
-      - /sys:/sys:ro
+      - /sys:/sys:ro  
       - /var/lib/docker/:/var/lib/docker:ro
-    ports:
-      - "8081:8081"
+    expose:
+      - 8082
     networks:
       - monitoring
+      
 volumes:
   grafana-data:
 
 networks:
   monitoring:
     driver: bridge
+

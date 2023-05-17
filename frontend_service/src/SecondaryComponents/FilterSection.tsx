@@ -1,8 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
 import DropdownMenu from '../components/DropDownMenu';
 import ColorModeSwitcher from '../components/LightDarkMode';
-
-// need type organization, can be reutilized
 interface FilterSectionProps {
   categories: string[];
   websites: string[];
