@@ -15,7 +15,7 @@ export class WebsitesService {
     }
 
     const websites = await this.websiteRepository.getWebsites();
-    const secondsInADay = 86400;
+    const secondsInADay = 600;
     await this.IRedisConnection.setex(cacheKey, secondsInADay, JSON.stringify(websites));
 
     return websites;

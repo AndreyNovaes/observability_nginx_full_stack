@@ -15,7 +15,7 @@ export class CategoriesService {
     }
 
     const categories = await this.categoryRepository.getCategories();
-    const secondsInADay = 86400;
+    const secondsInADay = 600;
     await this.IRedisConnection.setex(cacheKey, secondsInADay, JSON.stringify(categories));
 
     return categories;

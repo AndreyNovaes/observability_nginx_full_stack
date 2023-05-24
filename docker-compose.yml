@@ -7,11 +7,22 @@ services:
     container_name: frontend
     env_file: ./frontend_service/.env
     ports:
-      - "8080:8080"
+      - "4444:4444"
     depends_on:
       - backend
     networks:
       - monitoring
+
+  scraper:
+    build: ./scrapper_python_scrapy_pg
+    restart: unless-stopped
+    container_name: scraper
+    depends_on:
+      - postgres
+    networks:
+      - monitoring
+    env_file: ./scrapper_python_scrapy_pg/.env
+    command: ["sh", "-c", "./wait-for-it.sh postgres:5432 --timeout=30 --strict -- python start_spiders.py"]
 
   backend:
     build: ./backend_service
@@ -95,11 +106,36 @@ services:
       - /var/run:/var/run:rw
       - /sys:/sys:ro  
       - /var/lib/docker/:/var/lib/docker:ro
-    expose:
-      - 8082
+    ports:
+      - "8080:8080"
     networks:
       - monitoring
-      
+
+  postgres:
+    image: postgres:latest
+    restart: unless-stopped
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: scrapped_data
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - monitoring
+
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    container_name: redis
+    command: redis-server --requirepass redisPassword
+    ports:
+      - "6379:6379"
+    networks:
+      - monitoring
+
 volumes:
   grafana-data:
 
